@@ -7,9 +7,9 @@ from gpiozero import LED
 GPIO.setmode(GPIO.BCM)
 
 # Initialize LEDs 
-red_led = LED(7)
-blue_led = LED(8)
-green_led = LED(12)
+red_led = LED(11)
+blue_led = LED(13)
+green_led = LED(15)
 
 # Create the main window for the GUI
 main_window = Tk()
