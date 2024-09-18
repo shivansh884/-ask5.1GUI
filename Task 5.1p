@@ -6,7 +6,7 @@ from gpiozero import LED
 # GPIO setup
 GPIO.setmode(GPIO.BCM)
 
-# Initialize LEDs 
+# Initialize LEDs
 red_led = LED(11)
 blue_led = LED(13)
 green_led = LED(15)
