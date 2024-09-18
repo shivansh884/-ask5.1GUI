@@ -1,0 +1,65 @@
+from tkinter import *
+import tkinter.font as FONT
+import RPi.GPIO as GPIO
+from gpiozero import LED
+
+# GPIO setup
+GPIO.setmode(GPIO.BCM)
+
+# Initialize LEDs 
+red_led = LED(7)
+blue_led = LED(8)
+green_led = LED(12)
+
+# Create the main window for the GUI
+main_window = Tk()
+main_window.title("LED Controller")
+custom_font = FONT.Font(family='Helvetica', size=14, weight='bold')
+
+# Function to turn on the selected LED and turn off others
+def toggle_led(selected_led):
+    # Turn off all LEDs first
+    red_led.off()
+    blue_led.off()
+    green_led.off()
+    
+    # Reset button texts to indicate LEDs are off
+    red_button["text"] = "RED LED ON"
+    blue_button["text"] = "BLUE LED ON"
+    green_button["text"] = "GREEN LED ON"
+    
+    # Turn on the selected LED and change the button text
+    if selected_led == 'red':
+        red_led.on()
+        red_button["text"] = "RED LED OFF"
+    elif selected_led == 'blue':
+        blue_led.on()
+        blue_button["text"] = "BLUE LED OFF"
+    elif selected_led == 'green':
+        green_led.on()
+        green_button["text"] = "GREEN LED OFF"
+
+# Function to close the window and clean up GPIO resources
+def exit_program():
+    GPIO.cleanup()  # Clean up GPIO settings
+    main_window.destroy()  # Close the GUI window
+
+# Create buttons for each LED with corresponding labels and colors
+red_button = Button(main_window, text="RED LED ON", font=custom_font, command=lambda: toggle_led('red'), bg='red', height=2, width=30)
+red_button.grid(row=0, column=1)  # Place the button in the first row
+
+blue_button = Button(main_window, text="BLUE LED ON", font=custom_font, command=lambda: toggle_led('blue'), bg='blue', height=2, width=30)
+blue_button.grid(row=1, column=1)  # Place the button in the second row
+
+green_button = Button(main_window, text="GREEN LED ON", font=custom_font, command=lambda: toggle_led('green'), bg='green', height=2, width=30)
+green_button.grid(row=2, column=1)  # Place the button in the third row
+
+# Create the exit button to close the program
+exit_button = Button(main_window, text="EXIT", font=custom_font, command=exit_program, bg='yellow', height=2, width=30)
+exit_button.grid(row=3, column=1)  # Place the button in the fourth row
+
+# Set up window close protocol to clean up GPIO 
+main_window.protocol("WM_DELETE_WINDOW", exit_program)
+
+# Run the Tkinter main loop to display the GUI
+main_window.mainloop()
