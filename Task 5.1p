@@ -1,20 +1,19 @@
 from tkinter import *
-import tkinter.font as FONT
-import RPi.GPIO as GPIO
 from gpiozero import LED
+import RPi.GPIO as GPIO
+from functools import partial
 
-# GPIO setup
+# GPIO setup (BCM mode)
 GPIO.setmode(GPIO.BCM)
 
-# Initialize LEDs
-red_led = LED(11)
-blue_led = LED(13)
-green_led = LED(15)
+# Initialize LEDs with correct GPIO pins (BCM numbering)
+red_led = LED(17)   # Using GPIO 17 (Pin 11 on the Pi)
+blue_led = LED(27)  # Using GPIO 27 (Pin 13 on the Pi)
+green_led = LED(22) # Using GPIO 22 (Pin 15 on the Pi)
 
 # Create the main window for the GUI
 main_window = Tk()
-main_window.title("LED Controller")
-custom_font = FONT.Font(family='Helvetica', size=14, weight='bold')
+main_window.title("LED ")
 
 # Function to turn on the selected LED and turn off others
 def toggle_led(selected_led):
@@ -24,39 +23,39 @@ def toggle_led(selected_led):
     green_led.off()
     
     # Reset button texts to indicate LEDs are off
-    red_button["text"] = "RED LED ON"
-    blue_button["text"] = "BLUE LED ON"
-    green_button["text"] = "GREEN LED ON"
+    red_button.config(text="RED LED ON")
+    blue_button.config(text="BLUE LED ON")
+    green_button.config(text="GREEN LED ON")
     
     # Turn on the selected LED and change the button text
     if selected_led == 'red':
         red_led.on()
-        red_button["text"] = "RED LED OFF"
+        red_button.config(text="RED LED OFF")
     elif selected_led == 'blue':
         blue_led.on()
-        blue_button["text"] = "BLUE LED OFF"
+        blue_button.config(text="BLUE LED OFF")
     elif selected_led == 'green':
         green_led.on()
-        green_button["text"] = "GREEN LED OFF"
+        green_button.config(text="GREEN LED OFF")
 
 # Function to close the window and clean up GPIO resources
 def exit_program():
     GPIO.cleanup()  # Clean up GPIO settings
     main_window.destroy()  # Close the GUI window
 
-# Create buttons for each LED with corresponding labels and colors
-red_button = Button(main_window, text="RED LED ON", font=custom_font, command=lambda: toggle_led('red'), bg='red', height=2, width=30)
-red_button.grid(row=0, column=1)  # Place the button in the first row
+# Using `functools.partial` to pass arguments to toggle_led
+red_button = Button(main_window, text="RED LED ON", command=partial(toggle_led, 'red'), fg='red', height=1, width=10)
+red_button.grid(row=0, column= 1)  # Place the button in the first row and 1 coloumn
 
-blue_button = Button(main_window, text="BLUE LED ON", font=custom_font, command=lambda: toggle_led('blue'), bg='blue', height=2, width=30)
-blue_button.grid(row=1, column=1)  # Place the button in the second row
+blue_button = Button(main_window, text="BLUE LED ON", command=partial(toggle_led, 'blue'), fg='blue', height=1, width=10)
+blue_button.grid(row=0, column=2)  # Place the button in the first row and 2 coloumn
 
-green_button = Button(main_window, text="GREEN LED ON", font=custom_font, command=lambda: toggle_led('green'), bg='green', height=2, width=30)
-green_button.grid(row=2, column=1)  # Place the button in the third row
+green_button = Button(main_window, text="GREEN LED ON", command=partial(toggle_led, 'green'), fg='green', height=1, width=10)
+green_button.grid(row=0, column=3)  # Place the button in the first row and 3 coloumn
 
 # Create the exit button to close the program
-exit_button = Button(main_window, text="EXIT", font=custom_font, command=exit_program, bg='yellow', height=2, width=30)
-exit_button.grid(row=3, column=1)  # Place the button in the fourth row
+exit_button = Button(main_window, text="EXIT", command=exit_program, fg='black', height=1, width=10)
+exit_button.grid(row=0, column=4)  # Place the button in the first row and 4 coloumn
 
 # Set up window close protocol to clean up GPIO 
 main_window.protocol("WM_DELETE_WINDOW", exit_program)
